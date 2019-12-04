@@ -14,22 +14,22 @@ if __name__ == '__main__':
 import os
 from binascii import hexlify, unhexlify
 
-exthex = hexlify('EXTENSION')
+exthex = hexlify(b'EXTENSION')
 
 def hexify(fname):
     print(fname)
-    with open(fname,'r') as fid:
+    with open(fname,'rb') as fid:
         binry = hexlify(fid.read())
     fn,ext = os.path.splitext(fname)
     with open('{}_{}.txt'.format(fn,ext[1:]),'w') as fid:
-        fid.write('{}{}{}'.format(binry,exthex,hexlify(ext)))
+        fid.write(f'{binry}{exthex}{hexlify(ext.encode())}')
         
 def unhexify(fname):
-    with open(fname,'r') as fid:
+    with open(fname,'rb') as fid:
         ascry = unhexlify(fid.read())
-    extpos = ascry.rfind('EXTENSION')
+    extpos = ascry.rfind(b'EXTENSION')
     ext = ascry[extpos+9:]
-    with open('{}{}'.format(os.path.splitext(fname)[0].rsplit('_',1)[0],ext),'w') as fid:
+    with open("{os.path.splitext(fname)[0].rsplit('_')[0]}{ext.decode('utf-8')}",'wb') as fid:
         fid.write(ascry[:extpos])
     return ext
 
